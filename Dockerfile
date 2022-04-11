@@ -10,6 +10,7 @@ RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-s -w" -installsuff
 
 #RUNTIME
 FROM alpine
+MAINTAINER Echo echo@zppp.io
 WORKDIR /home
 
 COPY --from=builder /ddns /bin/ddns
