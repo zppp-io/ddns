@@ -44,6 +44,8 @@ func main() {
 		proxied = true
 	}
 
+	currentIp := "0.0.0.0"
+
 	for {
 		rsp, err := http.Get("http://api-ipv4.ip.sb/ip/")
 		if err != nil {
@@ -57,30 +59,35 @@ func main() {
 		ip := string(body)
 		sugar.Info("current ip is ", strings.Replace(ip, "\n", "", 1))
 
-		payload := &Payload{
-			Type:    "A",
-			Name:    name,
-			Content: ip,
-			Ttl:     1,
-			Proxied: proxied,
-		}
-		data, err := json.Marshal(payload)
-		if err != nil {
-			sugar.Fatal(err)
-		}
-
-		req, _ := http.NewRequest(http.MethodPut, "https://api.cloudflare.com/client/v4/zones/"+zoneId+"/dns_records/"+recordId, bytes.NewBuffer(data))
-		req.Header.Add("Authorization", "Bearer "+apiToken)
-		req.Header.Add("Content-Type", "application/json")
-		response, err := http.DefaultClient.Do(req)
-		body, _ = ioutil.ReadAll(response.Body)
-		if response.StatusCode != 200 {
-			sugar.Fatal("failed sync ip to cloud flare", zap.String("error", string(body)))
+		if currentIp == ip {
+			sugar.Info("current ip is same as server, no more action")
 		} else {
-			sugar.Info("sync success")
+			currentIp = ip
+			payload := &Payload{
+				Type:    "A",
+				Name:    name,
+				Content: ip,
+				Ttl:     1,
+				Proxied: proxied,
+			}
+			data, err := json.Marshal(payload)
+			if err != nil {
+				sugar.Fatal(err)
+			}
+
+			req, _ := http.NewRequest(http.MethodPut, "https://api.cloudflare.com/client/v4/zones/"+zoneId+"/dns_records/"+recordId, bytes.NewBuffer(data))
+			req.Header.Add("Authorization", "Bearer "+apiToken)
+			req.Header.Add("Content-Type", "application/json")
+			response, err := http.DefaultClient.Do(req)
+			body, _ = ioutil.ReadAll(response.Body)
+			if response.StatusCode != 200 {
+				sugar.Fatal("failed sync ip to cloud flare", zap.String("error", string(body)))
+			} else {
+				sugar.Info("sync success")
+			}
 		}
 
-		time.Sleep(time.Duration(intervalTime) * time.Minute)
+		time.Sleep(time.Duration(intervalTime) * time.Second)
 	}
 
 }
