@@ -87,7 +87,7 @@ func main() {
 			}
 		}
 
-		time.Sleep(time.Duration(intervalTime) * time.Second)
+		time.Sleep(time.Duration(intervalTime) * time.Minute)
 	}
 
 }
