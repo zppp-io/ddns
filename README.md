@@ -10,7 +10,8 @@
 | INTERVAL  | 修改IP的频率，单位分钟，建议5或更大的数值|
 | NAME  | 二级域名名称|
 
-当然，我们也支持`.env`文件，你需要把你的配置放在`/home`路径下。`.env`文件如下：
+当然，我们也支持`.env`文件，你需要把你的配置放在`/home`路径下。
+`.env`文件如下：
 ```
 API_TOKEN=YOUR_API_TOKEN_HERE
 ZONE_ID=DOMAIN_ZONE_ID
