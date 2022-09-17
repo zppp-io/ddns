@@ -1,5 +1,7 @@
-这是一个自动更新公网IP到cloud flare的小工具。
+# DDNS
+## 这是一个自动更新公网IP到cloud flare的小工具。
 
+## 配置说明
 需要配置如下环境变量：
 
 |  环境变量   | 说明  |
@@ -20,3 +22,8 @@ INTERVAL=10
 NAME=SUBDOMAIN
 PROXIED=false
 ```
+## 普通用户
+在release下载最新版本, 设置好配置文件即可。
+
+## docker用户
+在package里获取镜像拉取代码，然后配置环境变量。
