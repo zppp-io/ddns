@@ -3,12 +3,12 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
 	"zppp.io/ddns/config"
 
 	"go.uber.org/zap"
@@ -49,12 +49,15 @@ func main() {
 	for {
 		rsp, err := http.Get("http://api-ipv4.ip.sb/ip/")
 		if err != nil {
-			fmt.Println(err)
+			sugar.Error(err)
+			time.Sleep(5 * time.Second)
+			continue
 		}
 		defer rsp.Body.Close()
 		body, err := ioutil.ReadAll(rsp.Body)
 		if err != nil {
-			fmt.Println(err)
+			sugar.Error(err)
+			continue
 		}
 		ip := string(body)
 		sugar.Info("current ip is ", strings.Replace(ip, "\n", "", 1))
@@ -79,6 +82,11 @@ func main() {
 			req.Header.Add("Authorization", "Bearer "+apiToken)
 			req.Header.Add("Content-Type", "application/json")
 			response, err := http.DefaultClient.Do(req)
+			if err != nil {
+				sugar.Fatal(err)
+				time.Sleep(5 * time.Second)
+				continue
+			}
 			body, _ = ioutil.ReadAll(response.Body)
 			if response.StatusCode != 200 {
 				sugar.Fatal("failed sync ip to cloud flare", zap.String("error", string(body)))
