@@ -59,15 +59,14 @@ func main() {
 			sugar.Error(err)
 			continue
 		}
-		ip := string(body)
-		reg := regexp.MustCompile("[0-9]+.[0-9]+.[0-9]+.[0-9]+")
-		matchArray := reg.FindString(ip)
-		if matchArray == "" {
+		data := string(body)
+		reg := regexp.MustCompile("[0-9]+.[0-9]+.[0-9]+.[0-9]")
+		ip := reg.FindString(data)
+		if ip == "" {
 			sugar.Error("cannot match ip")
 			continue
 		}
-		sugar.Info("current ip is ", matchArray)
-
+		sugar.Info("current ip is ", ip)
 		if currentIp == ip {
 			sugar.Info("current ip is same as server, no more action")
 		} else {
