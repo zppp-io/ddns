@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"zppp.io/ddns/config"
@@ -47,7 +47,7 @@ func main() {
 	currentIp := "0.0.0.0"
 
 	for {
-		rsp, err := http.Get("http://api-ipv4.ip.sb/ip/")
+		rsp, err := http.Get("http://myip.ipip.net")
 		if err != nil {
 			sugar.Error(err)
 			time.Sleep(5 * time.Second)
@@ -60,7 +60,13 @@ func main() {
 			continue
 		}
 		ip := string(body)
-		sugar.Info("current ip is ", strings.Replace(ip, "\n", "", 1))
+		reg := regexp.MustCompile("[0-9]+.[0-9]+.[0-9]+.[0-9]+")
+		matchArray := reg.FindString(ip)
+		if matchArray == "" {
+			sugar.Error("cannot match ip")
+			continue
+		}
+		sugar.Info("current ip is ", matchArray)
 
 		if currentIp == ip {
 			sugar.Info("current ip is same as server, no more action")
