@@ -60,7 +60,7 @@ func main() {
 			continue
 		}
 		data := string(body)
-		reg := regexp.MustCompile("[0-9]+.[0-9]+.[0-9]+.[0-9]")
+		reg := regexp.MustCompile("[0-9]+.[0-9]+.[0-9]+.[0-9]+")
 		ip := reg.FindString(data)
 		if ip == "" {
 			sugar.Error("cannot match ip")
