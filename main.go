@@ -67,9 +67,7 @@ func main() {
 			continue
 		}
 		sugar.Info("current ip is ", ip)
-		if currentIp == ip {
-			sugar.Info("current ip is same as server, no more action")
-		} else {
+		if currentIp != ip {
 			currentIp = ip
 			payload := &Payload{
 				Type:    "A",
